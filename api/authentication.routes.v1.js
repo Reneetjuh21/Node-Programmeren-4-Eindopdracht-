@@ -24,7 +24,7 @@ router.post('/login', function(req, res) {
     var password = req.body.password;
 
     // Dit is een dummy-user - die haal je natuurlijk uit de database.
-    var _dummy_username = "username";
+    var _dummy_username = "test";
     var _dummy_password = "test";
 
     // Kijk of de gegevens matchen. Zo ja, dan token genereren en terugsturen.
