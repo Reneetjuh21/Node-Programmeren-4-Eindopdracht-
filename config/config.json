@@ -1,7 +1,8 @@
 {
     "webPort": "3000",
     "dbHost": "localhost",
-    "dbUser": "node_mysql_user",
-    "dbDatabase": "sakila",
+    "dbUser": "studentenhuis_user",
+    "dbDatabase": "studentenhuis",
+    "dbPassword": "secret",
     "secretkey": "een lange complexe tekst die moeilijk te raden is, die voor encryptie van jwt gebruikt wordt. "
 }
