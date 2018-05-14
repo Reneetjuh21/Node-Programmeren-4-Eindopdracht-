@@ -3,6 +3,7 @@
 //
 var express = require('express');
 var router = express.Router();
+var db = require('../config/db');
 
 var auth = require('../auth/authentication');
 
@@ -24,24 +25,27 @@ router.post('/login', function(req, res) {
     var password = req.body.password;
 
     //Users ophalen uit de database
-    db.query('SELECT ID, Email, Password FROM user', function(error, rows, fields) {
+    db.query('SELECT ID, Email, Password FROM user WHERE Email = ?',[ email], function(error, rows, fields) {
         if (error) { 
-			res.status(400).json(error);
+			res.status(412).json({ "error": "Een of meer properties in de request body ontbreken of zijn foutief" });
 		} else {
-			res.status(200).json(rows);
-		};
+			for (var i = 0; i < rows.length; i++){
+                var db_email = rows[i].Email;
+                var db_password = rows[i].Password;
+
+                // Kijk of de gegevens matchen. Zo ja, dan token genereren en terugsturen.
+                if (email == db_email && password == db_password) {
+                    var token = auth.encodeToken(email);
+                    res.status(200).json({
+                        "token": token,
+                        "email": email
+                    });
+                } else {
+                    res.status(412).json({ "error": "Een of meer properties in de request body ontbreken of zijn foutief" });
+                }
+            }
+		}
     });
-
-    // Kijk of de gegevens matchen. Zo ja, dan token genereren en terugsturen.
-    // if (username == db_username && password == db_password) {
-    //     var token = auth.encodeToken(username);
-    //     res.status(200).json({
-    //         "token": token,
-    //     });
-    // } else {
-    //     res.status(401).json({ "error": "Invalid credentials, bye" })
-    // }
-
 });
 
 //
