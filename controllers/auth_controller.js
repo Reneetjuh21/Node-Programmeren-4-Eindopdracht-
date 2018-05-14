@@ -2,6 +2,7 @@ const assert = require('assert')
 const auth = require('../auth/authentication')
 const bcrypt = require('bcrypt')
 const db = require('../config/db');
+const api_error = require('../models/apierror');
 
 
 module.exports = {
@@ -16,7 +17,8 @@ module.exports = {
             assert(typeof (req.body.password) === 'string', 'password must be a string.');
         }
         catch (ex) {
-            const error = res.status(412).json({ "error": "Een of meer properties in de request body ontbreken of zijn foutief" });
+            const error = new api_error("Een of meer properties in de request body ontbreken of zijn foutief", 412);
+            // const error = res.status(412).json({ "error": "Een of meer properties in de request body ontbreken of zijn foutief" });
             next(error);
             return
         }
@@ -40,10 +42,12 @@ module.exports = {
                                 "email": email
                             });
                         } else {
-                            res.status(401).json({ "error": "Invalid credentials" });
+                            const error = new api_error("Invalid credentials", 401);
+                            res.status(401).json(error);
                         }
                     } else {
-                        res.status(401).json({ "error": "Invalid credentials" });
+                        const error = new api_error("Invalid credentials", 401);
+                        res.status(401).json(error);
                     }
                 }
             }
