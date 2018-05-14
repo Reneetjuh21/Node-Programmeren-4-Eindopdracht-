@@ -11,8 +11,15 @@ module.exports = {
         console.dir(req.body);
 
         // De username en pwd worden meegestuurd in de request body
-        assert(req.body.email, 'email must be provided');
-        assert(req.body.password, 'password must be provided');
+        try {
+            assert(typeof (req.body.email) === 'string', 'email must be a string.');
+            assert(typeof (req.body.password) === 'string', 'password must be a string.');
+        }
+        catch (ex) {
+            const error = res.status(412).json({ "error": "Een of meer properties in de request body ontbreken of zijn foutief" });
+            next(error);
+            return
+        }
         var email = req.body.email;
         var password = req.body.password;
 
