@@ -67,46 +67,49 @@ router.post('/register', function(req, res) {
     var email = req.body.email;
     var password = req.body.password;
 
-    db.query('SELECT ID, Email FROM user WHERE Email = ?',[ email], function(error, rows, fields) {
-        if(error){
-            res.status(400).json(error);
-        } else {
-            if (rows.length == 0){
-                db.query('INSERT INTO `user`(`Voornaam`, `Achternaam`, `Email`, `Password`) VALUES (?, ?, ?, ?)',[ firstname, lastname, email, password], function(error, rows, fields) {
-                    if(error){
-                        res.status(400).json(error);
-                    } else {
-                        var token = auth.encodeToken(email);
-                        res.status(200).json({
-                            "token": token,
-                            "email": email
-                        });
-                    }
-                });  
+    if (firstname == '' || lastname == '' || email == '' || password == ''){
+        res.status(412).json({ "error": "Een of meer properties in de request body ontbreken of zijn foutief" });
+    } else {
+        db.query('SELECT ID, Email FROM user WHERE Email = ?',[ email], function(error, rows, fields) {
+            if(error){
+                res.status(400).json(error);
             } else {
-                for (var i = 0; i < rows.length; i++){
-                    var db_email = rows[i].Email;
-    
-                    if (email == db_email) {
-                        res.status(401).json({ "error": "De gebruiker die u probeert toe te voegen, gebruikt een emailadres dat al bekend is in onze database. Gebruik een andere." });
-                    } else {
-                        db.query('INSERT INTO `user`(`Voornaam`, `Achternaam`, `Email`, `Password`) VALUES (?, ?, ?, ?)',[ firstname, lastname, email, password], function(error, rows, fields) {
-                            if(error){
-                                res.status(400).json(error);
-                            } else {
-                                var token = auth.encodeToken(email);
-                                res.status(200).json({
-                                    "token": token,
-                                    "email": email
-                                });
-                            }
-                        });
-                    }
-                } 
+                if (rows.length == 0){
+                    db.query('INSERT INTO `user`(`Voornaam`, `Achternaam`, `Email`, `Password`) VALUES (?, ?, ?, ?)',[ firstname, lastname, email, password], function(error, rows, fields) {
+                        if(error){
+                            res.status(400).json(error);
+                        } else {
+                            var token = auth.encodeToken(email);
+                            res.status(200).json({
+                                "token": token,
+                                "email": email
+                            });
+                        }
+                    });  
+                } else {
+                    for (var i = 0; i < rows.length; i++){
+                        var db_email = rows[i].Email;
+        
+                        if (email == db_email) {
+                            res.status(401).json({ "error": "De gebruiker die u probeert toe te voegen, gebruikt een emailadres dat al bekend is in onze database. Gebruik een andere." });
+                        } else {
+                            db.query('INSERT INTO `user`(`Voornaam`, `Achternaam`, `Email`, `Password`) VALUES (?, ?, ?, ?)',[ firstname, lastname, email, password], function(error, rows, fields) {
+                                if(error){
+                                    res.status(400).json(error);
+                                } else {
+                                    var token = auth.encodeToken(email);
+                                    res.status(200).json({
+                                        "token": token,
+                                        "email": email
+                                    });
+                                }
+                            });
+                        }
+                    } 
+                }
             }
-        }
-    });
-
+        });
+    }
 });
 
 // Hiermee maken we onze router zichtbaar voor andere bestanden. 
