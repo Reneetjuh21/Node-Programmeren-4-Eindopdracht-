@@ -5,8 +5,9 @@ var http = require('http');
 var express = require('express');
 var bodyParser = require('body-parser')
 var logger = require('morgan');
-var routes = require('./api/routes');
-var auth_routes = require('./api/authentication.routes');
+var routesStudent = require('./api/studentenhuis.routes');
+var routesMaaltijd = require('./api/maaltijd.routes')
+var routesAuth = require('./api/authentication.routes');
 var config = require('./config/config');
 var db = require('./config/db');
 
@@ -48,8 +49,9 @@ app.use('*', function(req, res, next) {
 });
 
 // Installeer de routers die we gebruiken.
-app.use('/api', auth_routes);
-app.use('/api', routes);
+app.use('/api', routesAuth);
+app.use('/api', routesStudent);
+app.use('/api', routesMaaltijd);
 
 app.use(function(err, req, res, next) {
     console.dir(err);

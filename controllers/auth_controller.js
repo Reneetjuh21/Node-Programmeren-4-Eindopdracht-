@@ -1,9 +1,8 @@
 const assert = require('assert')
 const auth = require('../auth/authentication')
-const bcrypt = require('bcrypt')
 const db = require('../config/db');
 const api_error = require('../models/apierror');
-
+const bcrypt = require('bcrypt')
 
 module.exports = {
 
