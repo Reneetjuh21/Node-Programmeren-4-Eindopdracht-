@@ -29,7 +29,7 @@ router.post('/login', function(req, res) {
         if (error) { 
 			res.status(412).json({ "error": "Een of meer properties in de request body ontbreken of zijn foutief" });
 		} else {
-			for (var i = 0; i < rows.length; i++){
+			for (var i = 0; i <= rows.length; i++){
                 var db_email = rows[i].Email;
                 var db_password = rows[i].Password;
 
@@ -62,22 +62,50 @@ router.post('/register', function(req, res) {
     console.dir(req.body);
 
     // De username en pwd worden meegestuurd in de request body
-    var username = req.body.username;
+    var firstname = req.body.firstname;
+    var lastname = req.body.lastname;
+    var email = req.body.email;
     var password = req.body.password;
 
-    // Dit is een dummy-user - die haal je natuurlijk uit de database.
-    var _dummy_username = "test";
-    var _dummy_password = "test";
-
-    // Kijk of de username al in gebruik is genomen
-    if (username == _dummy_username) {
-        // var token = auth.encodeToken(username);
-        // res.status(200).json({
-        //     "token": token,
-        // });
-    } else {
-        res.status(401).json({ "error": "Username already in use, bye" })
-    }
+    db.query('SELECT ID, Email FROM user WHERE Email = ?',[ email], function(error, rows, fields) {
+        if(error){
+            res.status(400).json(error);
+        } else {
+            if (rows.length == 0){
+                db.query('INSERT INTO `user`(`Voornaam`, `Achternaam`, `Email`, `Password`) VALUES (?, ?, ?, ?)',[ firstname, lastname, email, password], function(error, rows, fields) {
+                    if(error){
+                        res.status(400).json(error);
+                    } else {
+                        var token = auth.encodeToken(email);
+                        res.status(200).json({
+                            "token": token,
+                            "email": email
+                        });
+                    }
+                });  
+            } else {
+                for (var i = 0; i < rows.length; i++){
+                    var db_email = rows[i].Email;
+    
+                    if (email == db_email) {
+                        res.status(401).json({ "error": "De gebruiker die u probeert toe te voegen, gebruikt een emailadres dat al bekend is in onze database. Gebruik een andere." });
+                    } else {
+                        db.query('INSERT INTO `user`(`Voornaam`, `Achternaam`, `Email`, `Password`) VALUES (?, ?, ?, ?)',[ firstname, lastname, email, password], function(error, rows, fields) {
+                            if(error){
+                                res.status(400).json(error);
+                            } else {
+                                var token = auth.encodeToken(email);
+                                res.status(200).json({
+                                    "token": token,
+                                    "email": email
+                                });
+                            }
+                        });
+                    }
+                } 
+            }
+        }
+    });
 
 });
 

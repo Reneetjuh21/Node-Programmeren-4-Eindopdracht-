@@ -25,7 +25,11 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse applica
 app.use(expressJWT({
     secret: config.secretkey
 }).unless({
-    path: ['/api/login']
+    path: [
+        '/api/login',
+        '/api/register'
+    ]
+    
 }));
 
 // configureer de app
