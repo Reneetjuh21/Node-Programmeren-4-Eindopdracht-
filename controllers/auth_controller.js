@@ -18,7 +18,6 @@ module.exports = {
         }
         catch (ex) {
             const error = new api_error("Een of meer properties in de request body ontbreken of zijn foutief", 412);
-            // const error = res.status(412).json({ "error": "Een of meer properties in de request body ontbreken of zijn foutief" });
             next(error);
             return
         }
@@ -27,7 +26,8 @@ module.exports = {
 
         db.query('SELECT ID, Email, Password FROM user WHERE Email = ?',[email], function(error, rows, fields) {
             if (error) { 
-                res.status(401).json({ "error": "Invalid credentials" });
+                const error = new api_error("Invalid credentials", 401);
+                res.status(401).json(error);
             } else {
                 for (var i = 0; i < rows.length; i++){
                     var db_email = rows[i].Email;
@@ -65,7 +65,7 @@ module.exports = {
         assert(typeof (req.body.password) === 'string', 'password must be a string.')
     }
     catch (ex) {
-        const error = res.status(412).json({ "error": "Een of meer properties in de request body ontbreken of zijn foutief" });
+        const error = new api_error("Een of meer properties in de request body ontbreken of zijn foutief", 412);
         next(error)
         return
     }
@@ -102,7 +102,8 @@ module.exports = {
                         var db_email = rows[i].Email;
         
                         if (email == db_email) {
-                            res.status(401).json({ "error": "De gebruiker die u probeert toe te voegen, gebruikt een emailadres dat al bekend is in onze database. Gebruik een andere." });
+                            const error = new api_error("De gebruiker die u probeert toe te voegen, gebruikt een emailadres dat al bekend is in onze database. Gebruik een andere.", 401);
+                            res.status(401).json(error);
                         } else {
                             const saltRounds = 10;
                             bcrypt.hash(password, saltRounds, function(err, hash) {
