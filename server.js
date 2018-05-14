@@ -5,9 +5,8 @@ var http = require('http');
 var express = require('express');
 var bodyParser = require('body-parser')
 var logger = require('morgan');
-var routes_v1 = require('./api/routes_v1');
-var routes_v2 = require('./api/routes_v2');
-var auth_routes_v1 = require('./api/authentication.routes.v1');
+var routes = require('./api/routes');
+var auth_routes = require('./api/authentication.routes');
 var config = require('./config/config');
 var db = require('./config/db');
 
@@ -26,7 +25,7 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse applica
 app.use(expressJWT({
     secret: config.secretkey
 }).unless({
-    path: ['/api/v1/login']
+    path: ['/api/login']
 }));
 
 // configureer de app
@@ -45,9 +44,8 @@ app.use('*', function(req, res, next) {
 });
 
 // Installeer de routers die we gebruiken.
-app.use('/api/v1', auth_routes_v1);
-app.use('/api/v1', routes_v1);
-app.use('/api/v2', routes_v2);
+app.use('/api', auth_routes);
+app.use('/api', routes);
 
 app.use(function(err, req, res, next) {
     console.dir(err);

@@ -20,11 +20,11 @@ router.post('/login', function(req, res) {
     console.dir(req.body);
 
     // De username en pwd worden meegestuurd in de request body
-    var username = req.body.username;
+    var email = req.body.email;
     var password = req.body.password;
 
     //Users ophalen uit de database
-    db.query('SELECT * FROM user', function(error, rows, fields) {
+    db.query('SELECT ID, Email, Password FROM user', function(error, rows, fields) {
         if (error) { 
 			res.status(400).json(error);
 		} else {
