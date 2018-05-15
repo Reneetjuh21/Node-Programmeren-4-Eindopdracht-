@@ -1,10 +1,13 @@
+const db = require('../config/db');
+
 class Studentenhuis {
 
-    constructor(studentenhuisID, name, address, userID){
-        this.studentenhuisID = studentenhuisID;
-        this.name = name;
-        this.address = address;
-        this.userID = userID;
+    constructor(studentenhuisID, name, address, contact, email){
+        this.ID = studentenhuisID;
+        this.naam = name;
+        this.adres = address;
+        this.contact = contact;
+        this.email = email;
     }
 
     getStudentenhuisID(){
@@ -19,8 +22,12 @@ class Studentenhuis {
         return this.address;
     }
 
-    getUserID(){
+    getContact(){
         return this.userID;
+    }
+
+    getEmail(){
+        return this.email;
     }
 }
 

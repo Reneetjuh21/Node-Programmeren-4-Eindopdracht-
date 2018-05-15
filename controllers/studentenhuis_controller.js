@@ -5,8 +5,8 @@ const api_error = require('../models/apierror');
 const Studentenhuis = require('../models/studentenhuis');
 
 module.exports = {
+
     postNew(req, res, next) {
-        
         var bufferPayload = '';
         const bufferToken = req.get('Authorization').substr(7);
 
@@ -40,10 +40,10 @@ module.exports = {
 			res.status(400).json(error);
 		} else {
             var insertedId = rows.insertId;
-            db.query('SELECT * FROM studentenhuis WHERE ID = ?', [insertedId], function(error, rows, fields) {
+            db.query('SELECT studentenhuis.ID, studentenhuis.Naam, studentenhuis.Adres, user.Voornaam, user.Achternaam, user.Email FROM studentenhuis LEFT JOIN user on studentenhuis.UserID = user.ID WHERE studentenhuis.ID = ? GROUP BY studentenhuis.ID', [insertedId], function(error, rows, fields) {
                 var array = [];
                 for(var i = 0; i < rows.length; i++){
-                    var huis = new Studentenhuis(rows[i].ID, rows[i].Naam, rows[i].Adres, rows[i].UserID);
+                    var huis = new Studentenhuis(rows[i].ID, rows[i].Naam, rows[i].Adres,rows[0].Voornaam+' '+rows[0].Achternaam, rows[0].Email);
                     array.push(huis);
                 }
                 res.status(200).json(array);
@@ -53,21 +53,17 @@ module.exports = {
     },
 
     getAll(req, res, next) {
-
         res.contentType('application/json');
 
-	    db.query('SELECT * FROM studentenhuis', function(error, rows, fields) {
-		if (error) {
-			res.status(400).json(error);
-		} else {
+	    db.query('SELECT studentenhuis.ID, studentenhuis.Naam, studentenhuis.Adres, user.Voornaam, user.Achternaam, user.Email FROM studentenhuis LEFT JOIN user on studentenhuis.UserID = user.ID GROUP BY studentenhuis.ID',  function(error, rows, fields) {
             var array = [];
             for(var i = 0; i < rows.length; i++){
-                var huis = new Studentenhuis(rows[i].ID, rows[i].Naam, rows[i].Adres, rows[i].UserID);
+                console.log(rows[i]);
+                var huis = new Studentenhuis(rows[i].ID, rows[i].Naam, rows[i].Adres,rows[0].Voornaam+' '+rows[0].Achternaam, rows[0].Email);
                 array.push(huis);
             }
-			res.status(200).json(array);
-		}
-	});
+            res.status(200).json(array);
+        });
     },
 
     getById(req, res, next) {
@@ -76,7 +72,7 @@ module.exports = {
 
         res.contentType('application/json');
         
-	    db.query('SELECT * FROM studentenhuis WHERE ID = ?', [studentenhuisId], function(error, rows, fields) {
+	    db.query('SELECT studentenhuis.ID, studentenhuis.Naam, studentenhuis.Adres, user.Voornaam, user.Achternaam, user.Email FROM studentenhuis LEFT JOIN user on studentenhuis.UserID = user.ID WHERE studentenhuis.ID = ? GROUP BY studentenhuis.ID', [studentenhuisId], function(error, rows, fields) {
 		if (error) {
 			res.status(400).json(error);
 		} else {
@@ -86,7 +82,7 @@ module.exports = {
             } else {
                 var array = [];
                 for(var i = 0; i < rows.length; i++){
-                    var huis = new Studentenhuis(rows[i].ID, rows[i].Naam, rows[i].Adres, rows[i].UserID);
+                    var huis = new Studentenhuis(rows[i].ID, rows[i].Naam, rows[i].Adres,rows[0].Voornaam+' '+rows[0].Achternaam, rows[0].Email);
                     array.push(huis);
                 }
                 res.status(200).json(array);
@@ -137,7 +133,7 @@ module.exports = {
                             if (error) {
                                 res.status(400).json(error);
                                 } else {
-                                    db.query('SELECT * FROM studentenhuis WHERE ID = ?', [insertedId], function(error, rows, fields) {
+                                    db.query('SELECT studentenhuis.ID, studentenhuis.Naam, studentenhuis.Adres, user.Voornaam, user.Achternaam, user.Email FROM studentenhuis LEFT JOIN user on studentenhuis.UserID = user.ID WHERE studentenhuis.ID = ? GROUP BY studentenhuis.ID', [insertedId], function(error, rows, fields) {
                                         var array = [];
                                         for(var i = 0; i < rows.length; i++){
                                             var huis = new Studentenhuis(rows[i].ID, rows[i].Naam, rows[i].Adres, rows[i].UserID);

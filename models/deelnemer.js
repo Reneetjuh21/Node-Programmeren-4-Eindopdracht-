@@ -1,21 +1,21 @@
 class Deelnemer {
 
-    constructor(userID, studentenhuisID, maaltijdID){
-        this.userID = userID;
-        this.studentenhuisID = studentenhuisID;
-        this.maaltijdID = maaltijdID;
+    constructor(voornaam, achternaam, email){
+        this.voornaam = voornaam;
+        this.achternaam = achternaam;
+        this.email = email;
     }
 
-    getUserID(){
-        return this.userID;
+    getVoornaam(){
+        return this.voornaam;
     }
 
-    getStudentenHuis(){
-        return this.studentenhuisID;
+    getAchternaam(){
+        return this.achternaam;
     }
 
-    getMaaltijdID(){
-        return this.maaltijdID;
+    getEmail(){
+        return this.email;
     }
 }
 

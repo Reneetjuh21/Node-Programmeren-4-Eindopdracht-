@@ -1,46 +1,36 @@
 class Maaltijd {
 
-    constructor(maaltijdID, name, desc, ingredients, allergies, price, userID, studentenhuisID){
-        this.maaltijdID = maaltijdID;
-        this.name = name;
-        this.desc = desc;
-        this.ingredients = ingredients;
-        this.allergies = allergies;
-        this.price = price;
-        this.userID = userID;
-        this.studentenhuisID = studentenhuisID;
+    constructor(maaltijdID, name, desc, ingredients, allergies, price){
+        this.ID = maaltijdID;
+        this.naam = name;
+        this.beschrijving = desc;
+        this.ingredienten = ingredients;
+        this.allergie = allergies;
+        this.prijs = price;
     }
 
     getMaaltijdID(){
-        return this.maaltijdID;
+        return this.ID;
     }
 
     getName(){
-        return this.name;
+        return this.naam;
     }
 
     getDesc(){
-        return this.desc;
+        return this.beschrijving;
     }
 
     getIngredients(){
-        return this.ingredients;
+        return this.ingredienten;
     }
 
     getAllergies(){
-        return this.allergies;
+        return this.allergie;
     }
 
     getPrice(){
-        return this.price;
-    }
-
-    getUserID(){
-        return this.userID;
-    }
-
-    getStudentenHuisID(){
-        return this.studentenhuisID;
+        return this.prijs;
     }
 }
 
