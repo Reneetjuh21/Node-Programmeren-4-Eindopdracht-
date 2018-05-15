@@ -4,8 +4,8 @@ const db = require('../config/db');
 const api_error = require('../models/apierror');
 
 module.exports = {
-
     postNew(req, res, next) {
+        
         var bufferPayload = '';
         const bufferToken = req.get('Authorization').substr(7);
 
