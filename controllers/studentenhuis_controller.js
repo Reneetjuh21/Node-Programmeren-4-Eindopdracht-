@@ -13,13 +13,13 @@ module.exports = {
         var decodedUserToken = auth.decodeToken(bufferToken, (err, payload) => {
             if (err) {
                 const error = new api_error("Niet geautoriseerd (geen valid token)", 401);
-                next(error);
+                res.status(401).json(error);
             } else {
                 bufferPayload = payload;
             	 }
             });
 
-        var userToken = bufferPayload.userID;
+        var userToken = bufferPayload.UserID;
         console.log(userToken);
 
         try {
@@ -27,7 +27,7 @@ module.exports = {
                 assert(typeof (req.body.adres) === 'string', 'Adres must be a string.')
             } catch (ex) {
                 const error = new api_error("Een of meer properties in de request body ontbreken of zijn foutief", 412);
-                next(error);
+                res.status(412).json(error);
         }
 
         res.contentType('application/json');
@@ -82,7 +82,7 @@ module.exports = {
 		} else {
             if (rows.length == 0) {
                 const error = new api_error("Niet gevonden (huisId bestaat niet)", 404);
-                next(error);
+                res.status(404).json(error);
             } else {
                 var array = [];
                 for(var i = 0; i < rows.length; i++){
@@ -102,22 +102,20 @@ module.exports = {
         var decodedUserToken = auth.decodeToken(bufferToken, (err, payload) => {
             if (err) {
                 const error = new api_error("Niet geautoriseerd (geen valid token)", 401);
-                next(error);
+                res.status(401).json(error);
             } else {
                 bufferPayload = payload;
-                return;
             }
         });
       
-        var userToken = bufferPayload.userID;
+        var userToken = bufferPayload.UserID;
 
         try {
             assert(typeof (req.body.naam) === 'string', 'Name must be a string.')
             assert(typeof (req.body.adres) === 'string', 'Adres must be a string.')
         } catch (ex) {
             const error = new api_error("Een of meer properties in de request body ontbreken of zijn foutief", 412);
-            next(error);
-            return;
+            res.status(412).json(error);
         }
 
         var insertedNaam = req.body.naam;
@@ -133,7 +131,7 @@ module.exports = {
                 if (rows.length !== 0) {
                     if (rows[0].UserID !== userToken) {
                         const error = new api_error('Conflict (Gebruiker mag deze data niet wijzigen)', 409);
-                        next(error);
+                        res.status(409).json(error);
                     } else {
                         db.query('UPDATE studentenhuis SET naam = ? , Adres = ? WHERE ID = ?', [insertedNaam, insertedAdres, insertedId], function(error, rows, fields) {
                             if (error) {
@@ -152,7 +150,7 @@ module.exports = {
                     }
                 } else {
                     const error = new api_error("Niet gevonden (huisId bestaat niet)", 404);
-                    next(error);
+                    res.status(404).json(error);
                 }
             }
         });
@@ -165,14 +163,13 @@ module.exports = {
         var decodedUserToken = auth.decodeToken(bufferToken, (err, payload) => {
             if (err) {
                 const error = new api_error("Niet geautoriseerd (geen valid token)", 401);
-                next(error);
+                res.status(401).json(error);
             } else {
                 bufferPayload = payload;
-                return;
             }
         });
         
-        var userToken = bufferPayload.userID;
+        var userToken = bufferPayload.UserID;
         var insertedId = req.params.id;
        
         res.contentType('application/json');
@@ -181,7 +178,7 @@ module.exports = {
             if (rows.length !== 0) {
                 if (rows[0].UserID !== userToken) {
                     const error = new api_error('Conflict (Gebruiker mag deze data niet wijzigen)', 409);
-                    next(error);
+                    res.status(409).json(error);
                 } else {
                     db.query('DELETE FROM studentenhuis WHERE ID = ?', [insertedId], function(error, rows, fields) {
                         if (error) {
@@ -194,7 +191,7 @@ module.exports = {
                 } 
             } else {
                 const error = new api_error('Niet gevonden (huisId bestaat niet)', 404);
-                next(error);
+                res.status(404).json(error);
             };
         });
     }
