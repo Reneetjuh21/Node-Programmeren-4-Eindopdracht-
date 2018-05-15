@@ -2,6 +2,7 @@ const assert = require('assert')
 const auth = require('../auth/authentication.js');
 const db = require('../config/db');
 const api_error = require('../models/apierror');
+const Studentenhuis = require('../models/studentenhuis');
 
 module.exports = {
     postNew(req, res, next) {
@@ -40,7 +41,12 @@ module.exports = {
 		} else {
             var insertedId = rows.insertId;
             db.query('SELECT * FROM studentenhuis WHERE ID = ?', [insertedId], function(error, rows, fields) {
-                res.status(200).json(rows);
+                var array = [];
+                for(var i = 0; i < rows.length; i++){
+                    var huis = new Studentenhuis(rows[i].ID, rows[i].Naam, rows[i].Adres, rows[i].UserID);
+                    array.push(huis);
+                }
+                res.status(200).json(array);
             });
 		};
 	});
@@ -54,7 +60,12 @@ module.exports = {
 		if (error) {
 			res.status(400).json(error);
 		} else {
-			res.status(200).json(rows);
+            var array = [];
+            for(var i = 0; i < rows.length; i++){
+                var huis = new Studentenhuis(rows[i].ID, rows[i].Naam, rows[i].Adres, rows[i].UserID);
+                array.push(huis);
+            }
+			res.status(200).json(array);
 		}
 	});
     },
@@ -73,7 +84,12 @@ module.exports = {
                 const error = new api_error("Niet gevonden (huisId bestaat niet)", 404);
                 res.status(404).json(error);
             } else {
-                res.status(200).json(rows);
+                var array = [];
+                for(var i = 0; i < rows.length; i++){
+                    var huis = new Studentenhuis(rows[i].ID, rows[i].Naam, rows[i].Adres, rows[i].UserID);
+                    array.push(huis);
+                }
+                res.status(200).json(array);
             }
 		}
 	    });
@@ -122,7 +138,12 @@ module.exports = {
                                 res.status(400).json(error);
                                 } else {
                                     db.query('SELECT * FROM studentenhuis WHERE ID = ?', [insertedId], function(error, rows, fields) {
-                                        res.status(200).json(rows);
+                                        var array = [];
+                                        for(var i = 0; i < rows.length; i++){
+                                            var huis = new Studentenhuis(rows[i].ID, rows[i].Naam, rows[i].Adres, rows[i].UserID);
+                                            array.push(huis);
+                                        }
+                                        res.status(200).json(array);
                                     });
                                 }
                         }); 
