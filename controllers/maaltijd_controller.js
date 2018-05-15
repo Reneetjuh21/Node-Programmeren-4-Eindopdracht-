@@ -1,9 +1,34 @@
 const assert = require('assert')
 const auth = require('../auth/authentication.js');
 const db = require('../config/db');
+const api_error = require('../models/apierror');
 
 module.exports = {
     postNew(req, res, next) {
+        const userToken = req.get('Authorization');
+        var subUserToken = userToken.substr(7);
+        var decodedUserToken = auth.decodeToken(subUserToken, (err, payload) => {
+            if (err) {
+                const error = new api_error("Niet geautoriseerd (geen valid token)", 401);
+                next(error);
+            } else {
+                console.log(payload);
+                return;
+            }
+        });
+        //To-do: check ID of payload, use it to create a new row.
+        try {
+                assert(typeof (req.body.naam) === 'string', 'Name must be a string.')
+                assert(typeof (req.body.beschrijving) === 'string', 'Beschrijving must be a string.')
+                assert(typeof (req.body.ingredienten) === 'string', 'Ingredienten must be a string.')
+                assert(typeof (req.body.allergie) === 'string', 'Allergie must be a string.')
+                assert(typeof (req.body.prijs) === 'number', 'Prijs must be a number.')
+            } catch (ex) {
+                const error = new api_error("Een of meer properties in de request body ontbreken of zijn foutief", 412);
+                next(error);
+                return;
+        }
+
         res.contentType('application/json');
 
 	    var insertedNaam = req.body.naam;
@@ -13,15 +38,23 @@ module.exports = {
         var insertedPrijs = req.body.prijs;
         var insertedStudentId = req.params.id
 
-        const authCode = req.headers.authorization;
-        
-	    db.query('INSERT INTO maaltijd (Naam, Beschrijving, Ingredienten, Allergie, Prijs, UserID, StudentenhuisID) VALUES (?, ?, ?, ?, ?, ?, ?)', [insertedNaam, insertedBeschrijving, insertedIngredienten, insertedAllergie, insertedPrijs, 1, insertedStudentId], function(error, rows, fields) {
-		if (error) {
-			res.status(400).json(error);
-		} else {
-			res.status(200).json(rows);
-		}
-	});
+        db.query('SELECT * FROM studentenhuis WHERE ID = ?', [insertedStudentId], function(error, rows, fields) {
+            if (rows.length == 0) {
+                const error = new api_error('Niet gevonden (huisId bestaat niet)', 404);
+                next(error);
+            } else {
+                db.query('INSERT INTO maaltijd (Naam, Beschrijving, Ingredienten, Allergie, Prijs, UserID, StudentenhuisID) VALUES (?, ?, ?, ?, ?, ?, ?)', [insertedNaam, insertedBeschrijving, insertedIngredienten, insertedAllergie, insertedPrijs, 1, insertedStudentId], function(error, rows, fields) {
+                    if (error) {
+                        res.status(400).json(error);
+                    } else {
+                        var insertedId = rows.insertId;
+                        db.query('SELECT * FROM maaltijd WHERE maaltijd.ID = ?', [insertedId], function(error, rows, fields) {
+                            res.status(200).json(rows);
+                        });
+                    }
+                });
+            }
+        });
     },
 
     getAll(req, res, next) {
@@ -33,7 +66,12 @@ module.exports = {
 		if (error) {
 			res.status(400).json(error);
 		} else {
-			res.status(200).json(rows);
+            if (rows.length == 0) {
+                const error = new api_error('Niet gevonden (huisId bestaat niet)', 404);
+                next(error);
+            } else {
+                res.status(200).json(rows);
+            }
 		}
 	});
     },
@@ -43,16 +81,45 @@ module.exports = {
         
         var insertedStudentId = req.params.id;
         var insertedMaaltijdId = req.params.mId;
+
 	    db.query('SELECT * FROM maaltijd WHERE maaltijd.StudentenhuisID = ? AND maaltijd.ID = ?', [insertedStudentId, insertedMaaltijdId], function(error, rows, fields) {
 		if (error) {
 			res.status(400).json(error);
 		} else {
-			res.status(200).json(rows);
+            if (rows.length == 0) {
+                const error = new api_error('Niet gevonden (huisId of maaltijdId bestaat niet)', 404);
+                next(error);
+            } else {
+                res.status(200).json(rows);
+            }
 		}
 	    });
     },
 
     putById(req, res, next) {
+        const userToken = req.get('Authorization');
+        var subUserToken = userToken.substr(7);
+        var decodedUserToken = auth.decodeToken(subUserToken, (err, payload) => {
+            if (err) {
+                const error = new api_error("Niet geautoriseerd (geen valid token)", 401);
+                next(error);
+            } else {
+                console.log(payload);
+                return;
+            }
+        });
+        //To-do: check ID of payload, if ID was used to create the row, then continue. & add 409 conflict error.
+        try {
+                assert(typeof (req.body.naam) === 'string', 'Name must be a string.')
+                assert(typeof (req.body.beschrijving) === 'string', 'Beschrijving must be a string.')
+                assert(typeof (req.body.ingredienten) === 'string', 'Ingredienten must be a string.')
+                assert(typeof (req.body.allergie) === 'string', 'Allergie must be a string.')
+                assert(typeof (req.body.prijs) === 'number', 'Prijs must be a number.')
+            } catch (ex) {
+                const error = new api_error("Een of meer properties in de request body ontbreken of zijn foutief", 412);
+                next(error);
+                return;
+        }
 
         var insertedNaam = req.body.naam;
         var insertedBeschrijving = req.body.beschrijving;
@@ -63,26 +130,69 @@ module.exports = {
         var insertedMaaltijdId = req.params.mId;
 
         res.contentType('application/json');
-        db.query('UPDATE maaltijd SET naam = ? , beschrijving = ? , ingredienten = ? , allergie = ? , prijs = ? WHERE maaltijd.StudentenhuisID = ? AND maaltijd.ID = ?', [insertedNaam, insertedBeschrijving, insertedIngredienten, insertedAllergie, insertedPrijs, insertedStudentId, insertedMaaltijdId], function(error, rows, fields) {
+
+        db.query('SELECT * FROM maaltijd WHERE maaltijd.StudentenhuisID = ? AND maaltijd.ID = ?', [insertedStudentId, insertedMaaltijdId], function(error, rows, fields) {
             if (error) {
                 res.status(400).json(error);
             } else {
-                res.status(200).json(rows);
+                if (rows.length == 0) {
+                    const error = new api_error('Niet gevonden (huisId of maaltijdId bestaat niet)', 404);
+                    next(error);
+                } else {
+                    db.query('UPDATE maaltijd SET naam = ? , beschrijving = ? , ingredienten = ? , allergie = ? , prijs = ? WHERE maaltijd.StudentenhuisID = ? AND maaltijd.ID = ?', [insertedNaam, insertedBeschrijving, insertedIngredienten, insertedAllergie, insertedPrijs, insertedStudentId, insertedMaaltijdId], function(error, rows, fields) {
+                        if (error) {
+                            res.status(400).json(error);
+                        } else {
+                            db.query('SELECT * FROM maaltijd WHERE maaltijd.StudentenhuisID = ? AND maaltijd.ID = ?', [insertedStudentId, insertedMaaltijdId], function(error, rows, fields) {
+                                if (error) {
+                                    res.status(400).json(error);
+                                } else {
+                                    res.status(200).json(rows);
+                                }
+                            });
+                        }
+                    });
+                }
             }
         });
     },
 
     deleteById(req, res, next) {
+        const userToken = req.get('Authorization');
+        var subUserToken = userToken.substr(7);
+        var decodedUserToken = auth.decodeToken(subUserToken, (err, payload) => {
+            if (err) {
+                const error = new api_error("Niet geautoriseerd (geen valid token)", 401);
+                next(error);
+            } else {
+                console.log(payload);
+                return;
+            }
+        });
+        //To-do: check ID of payload, if ID was used to create the row, then continue.
+
         res.contentType('application/json');
 
         var insertedStudentId = req.params.id;
         var insertedMaaltijdId = req.params.mId;
 
-        db.query('DELETE FROM maaltijd WHERE maaltijd.StudentenhuisID = ? AND maaltijd.ID = ?', [insertedStudentId, insertedMaaltijdId], function(error, rows, fields) {
+        db.query('SELECT * FROM maaltijd WHERE maaltijd.StudentenhuisID = ? AND maaltijd.ID = ?', [insertedStudentId, insertedMaaltijdId], function(error, rows, fields) {
             if (error) {
                 res.status(400).json(error);
             } else {
-                res.status(200).json(rows);
+                if (rows.length == 0) {
+                    const error = new api_error('Niet gevonden (huisId of maaltijdId bestaat niet)', 404);
+                    next(error);
+                } else {
+                    db.query('DELETE FROM maaltijd WHERE maaltijd.StudentenhuisID = ? AND maaltijd.ID = ?', [insertedStudentId, insertedMaaltijdId], function(error, rows, fields) {
+                        if (error) {
+                            res.status(400).json(error);
+                        } else {
+                            const error = new api_error('Maaltijd is succesvol verwijderd.', 200);
+                            res.status(200).json(error);
+                        }
+                    });
+                }
             }
         });
     }
