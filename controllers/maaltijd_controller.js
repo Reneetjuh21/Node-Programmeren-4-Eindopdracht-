@@ -39,7 +39,7 @@ module.exports = {
         var insertedIngredienten = req.body.ingredienten;
         var insertedAllergie = req.body.allergie;
         var insertedPrijs = req.body.prijs;
-        var insertedStudentId = req.params.id
+        var insertedStudentId = req.params.id;
 
         db.query('SELECT * FROM studentenhuis WHERE ID = ?', [insertedStudentId], function(error, rows, fields) {
             if (rows.length == 0) {
