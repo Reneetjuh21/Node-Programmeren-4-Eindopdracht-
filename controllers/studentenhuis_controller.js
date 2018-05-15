@@ -73,9 +73,11 @@ module.exports = {
         var subUserToken = userToken.substr(7);
         var decodedUserToken = auth.decodeToken(subUserToken, (err, payload) => {
             if (err) {
-                res.status(400).json(err);
+                const error = new api_error("Niet geautoriseerd (geen valid token)", 401);
+                next(error);
             } else {
                 console.log(payload);
+                return;
             }
         });
         //To-do: check ID of payload, if ID was used to create the row, then continue. & add 409 conflict error.
@@ -118,9 +120,11 @@ module.exports = {
         var subUserToken = userToken.substr(7);
         var decodedUserToken = auth.decodeToken(subUserToken, (err, payload) => {
             if (err) {
-                res.status(400).json(err);
+                const error = new api_error("Niet geautoriseerd (geen valid token)", 401);
+                next(error);
             } else {
                 console.log(payload);
+                return;
             }
         });
         //To-do: check ID of payload, if ID was used to create the row, then continue.
