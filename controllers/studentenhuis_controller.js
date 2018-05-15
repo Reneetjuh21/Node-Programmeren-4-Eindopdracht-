@@ -5,17 +5,21 @@ const api_error = require('../models/apierror');
 
 module.exports = {
     postNew(req, res, next) {
-        const userToken = req.get('Authorization');
-        var subUserToken = userToken.substr(7);
+        const bufferToken = req.get('Authorization');
+        var subUserToken = bufferToken.substr(7);
+        var bufferPayload = '';
         var decodedUserToken = auth.decodeToken(subUserToken, (err, payload) => {
             if (err) {
                 const error = new api_error("Niet geautoriseerd (geen valid token)", 401);
+                console.log(err);
                 next(error);
             } else {
-                console.log(payload);
-                return;
-            }
-        });
+                bufferPayload = payload;
+            
+            	 }
+            });
+                var userToken = bufferPayload.userID;
+                console.log(userToken);
         //To-do: check ID of payload, use it to create a new row.
         try {
                 assert(typeof (req.body.naam) === 'string', 'Name must be a string.')
@@ -28,7 +32,7 @@ module.exports = {
         res.contentType('application/json');
 	    var insertedNaam = req.body.naam;
 	    var insertedAdres = req.body.adres;
-	    db.query('INSERT INTO studentenhuis (Naam, Adres, UserID) VALUES (?, ?, ?)', [insertedNaam, insertedAdres, 1], function(error, rows, fields) {
+	    db.query('INSERT INTO studentenhuis (Naam, Adres, UserID) VALUES (?, ?, ?)', [insertedNaam, insertedAdres, userToken], function(error, rows, fields) {
 		if (error) {
 			res.status(400).json(error);
 		} else {
