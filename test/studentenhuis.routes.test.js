@@ -5,11 +5,25 @@ const server = require('../server')
 chai.should()
 chai.use(chaiHttp)
 
+before(function(){
+    global.token = '';
+});
+
 describe('Studentenhuis API POST', () => {
     it('should throw an error when using invalid JWT token', (done) => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        let token = 'flk234fdlk4rlgsdf345dfg4245ersgfgsdfjsdfgiiuoghxx5';
+
+        chai.request(server)
+            .post('/api/studentenhuis')
+            .set('x-auth-token', token)
+            .end( (err, res) => {
+                res.should.have.status(401);
+            });
+
         done()
     })
 
@@ -17,6 +31,25 @@ describe('Studentenhuis API POST', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        let studentenhuis = {
+            naam: 'Herstraat',
+            adres: 'Herstraat 9 Den Hout'
+        };
+
+        chai.request(server)
+            .post('/api/studentenhuis')
+            .set('x-auth-token', global.token)
+            .send(studentenhuis)
+            .end( (err, res) => {
+                res.should.have.status(200);
+                res.should.be.a('object');
+                res.body.should.have.property('ID');
+                res.body.should.have.property('Naam');
+                res.body.should.have.property('Adres');
+                res.body.should.have.property('UserID');
+            });
+
         done()
     })
 
@@ -24,6 +57,19 @@ describe('Studentenhuis API POST', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        let studentenhuis = {
+            adres: 'Herstraat 9 Den Hout'
+        };
+
+        chai.request(server)
+            .post('/api/studentenhuis')
+            .set('x-auth-token', global.token)
+            .send(studentenhuis)
+            .end( (err, res) => {
+                res.should.have.status(412);
+            });
+
         done()
     })
 
@@ -31,6 +77,21 @@ describe('Studentenhuis API POST', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        let studentenhuis = {
+            naam: 'Herstraat'
+        };
+
+        chai.request(server)
+            .post('/api/studentenhuis')
+            .set('x-auth-token', global.token)
+            .send(studentenhuis)
+            .end( (err, res) => {
+                res.should.have.status(412);
+            });
+
+        done();
+
         done()
     })
 })
@@ -40,6 +101,16 @@ describe('Studentenhuis API GET all', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        let token = 'flk234fdlk4rlgsdf345dfg4245ersgfgsdfjsdfgiiuoghxx5';
+
+        chai.request(server)
+            .get('/api/studentenhuis')
+            .set('x-auth-token', token)
+            .end( (err, res) => {
+                res.should.have.status(401);
+            });
+
         done()
     })
 
@@ -47,6 +118,14 @@ describe('Studentenhuis API GET all', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        chai.request(server)
+            .get('/api/studentenhuis')
+            .set('x-auth-token', global.token)
+            .end( (err, res) => {
+                res.body.should.be.a('array');
+            });
+
         done()
     })
 })
@@ -56,6 +135,16 @@ describe('Studentenhuis API GET one', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        let token = 'flk234fdlk4rlgsdf345dfg4245ersgfgsdfjsdfgiiuoghxx5';
+
+        chai.request(server)
+            .get('/api/studentenhuis/1')
+            .set('x-auth-token', token)
+            .end( (err, res) => {
+                res.should.have.status(401);
+            });
+
         done()
     })
 
@@ -63,6 +152,15 @@ describe('Studentenhuis API GET one', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        chai.request(server)
+            .get('/api/studentenhuis/1')
+            .set('x-auth-token', global.token)
+            .end( (err, res) => {
+                res.should.have.status(200);
+                res.should.be.a('object');
+            });
+
         done()
     })
 
@@ -70,6 +168,14 @@ describe('Studentenhuis API GET one', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        chai.request(server)
+            .get('/api/studentenhuis/999')
+            .set('x-auth-token', global.token)
+            .end( (err, res) => {
+                res.should.have.status(404);
+            });
+
         done()
     })
 })
@@ -79,6 +185,16 @@ describe('Studentenhuis API PUT', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        let token = 'flk234fdlk4rlgsdf345dfg4245ersgfgsdfjsdfgiiuoghxx5';
+
+        chai.request(server)
+            .put('/api/studentenhuis/1')
+            .set('x-auth-token', token)
+            .end( (err, res) => {
+                res.should.have.status(401);
+            });
+
         done()
     })
 
@@ -86,6 +202,23 @@ describe('Studentenhuis API PUT', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        let studentenhuis = {
+            naam: 'Studentenhuis van Jan',
+            adres: 'Den Dries 63 Gilze'
+        };
+
+        chai.request(server)
+            .put('/api/studentenhuis/75')
+            .send(studentenhuis)
+            .set('x-auth-token', global.token)
+            .end( (err, res) =>{
+                res.should.have.status(200);
+                res.should.be.a('object');
+                res.body.should.have.property('ID');
+            });
+
+
         done()
     })
 
@@ -93,6 +226,20 @@ describe('Studentenhuis API PUT', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        let studentenhuis = {
+            adres: 'Herstraat 9 Den Hout'
+        };
+
+        chai.request(server)
+            .put('/api/studentenhuis/7')
+            .send(studentenhuis)
+            .set('x-auth-token', global.token)
+            .end( (err, res) => {
+                res.should.have.status(412)
+            });
+
+
         done()
     })
 
@@ -100,6 +247,19 @@ describe('Studentenhuis API PUT', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        let studentenhuis = {
+            naam: 'Herstraat'
+        };
+
+        chai.request(server)
+            .put('/api/studentenhuis/7')
+            .send(studentenhuis)
+            .set('x-auth-token', global.token)
+            .end( (err, res) => {
+                res.should.have.status(412)
+            });
+
         done()
     })
 })
@@ -109,6 +269,16 @@ describe('Studentenhuis API DELETE', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        let token = 'flk234fdlk4rlgsdf345dfg4245ersgfgsdfjsdfgiiuoghxx5';
+
+        chai.request(server)
+            .delete('/api/studentenhuis/8')
+            .set('x-auth-token', token)
+            .end( (err, res) => {
+                res.should.have.status(401);
+            });
+
         done()
     })
 
@@ -116,6 +286,8 @@ describe('Studentenhuis API DELETE', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+
         done()
     })
 

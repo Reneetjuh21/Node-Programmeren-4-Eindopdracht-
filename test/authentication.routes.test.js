@@ -201,12 +201,12 @@ describe('Login', () => {
 
                 const response = res.body
                 response.should.have.property('token').which.is.an('object')
+
+                validToken = res.body.token
+                module.exports = {
+                    token: validToken
+                }
             })
-        
-        validToken = res.body.token
-        module.exports = {
-            token: validToken
-        }
         done()
     })
 
