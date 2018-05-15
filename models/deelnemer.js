@@ -19,4 +19,4 @@ class Deelnemer {
     }
 }
 
-module.exports = User;
+module.exports = Deelnemer;
