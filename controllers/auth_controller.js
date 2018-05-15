@@ -6,7 +6,6 @@ const api_error = require('../models/apierror');
 const bcrypt = require('bcrypt');
 const usercontrol = require('./user_controller');
 const validator = require("email-validator");
- 
 
 module.exports = {
 
@@ -33,8 +32,10 @@ module.exports = {
         }
 
         db.query('SELECT ID, Email, Password FROM user WHERE Email = ?',[email], function(err, rows, fields) {
-            console.debug(rows);
             if (err) { 
+                const error = new api_error("Invalid credentials", 401);
+                res.status(401).json(error);
+            }else if(rows.length == 0) {
                 const error = new api_error("Invalid credentials", 401);
                 res.status(401).json(error);
             } else {
