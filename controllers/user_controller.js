@@ -7,9 +7,9 @@ module.exports = {
     createUser(req, res, next){
         try {
             assert.equal(typeof(req.body.firstname), 'string', 'Expected a string!')
-            assert.ok(req.body.firstname.length > 2, 'Value must be longer than 2 chars!')
+            assert.ok(req.body.firstname.length > 1, 'Value must be longer than 2 chars!')
             assert.equal(typeof(req.body.lastname), 'string', 'Expected a string!')
-            assert.ok(req.body.lastname.length > 2, 'Value must be longer than 2 chars!')
+            assert.ok(req.body.lastname.length > 1, 'Value must be longer than 2 chars!')
             assert.equal(typeof(req.body.email), 'string', 'Expected a string!')
             assert.equal(typeof(req.body.password), 'string', 'Expected a string!')
         }
