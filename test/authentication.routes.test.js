@@ -1,9 +1,9 @@
 /**
  * Testcases aimed at testing the authentication process. 
  */
-const chai = require('chai')
-const chaiHttp = require('chai-http')
-const server = require('../server')
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const server = require('../server');
 
 chai.should()
 chai.use(chaiHttp)
@@ -17,6 +17,26 @@ describe('Registration', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+        // expect(auth.encodeToken("test@testmail.nl", 99)).to.not.throw();
+        // var token = auth.encodeToken("test@testmail.nl", 99);
+        // expect(token).to.not.be.null;
+        // expect(token).to.not.be.undefined;
+
+        chai.request(server)
+            .post('/api/register')
+            .send({
+                "firstname": "testman",
+                "lastname": "tesla",
+                "email": "manwithtestmail@testmail.com",
+                "password": "supersafepassword"
+            })
+            .end((err,res) => {
+                res.should.have.status(200)
+                res.body.should.be.a('object')
+
+                const response = res.body
+                response.should.have.property('token').which.is.an('object')
+            })
 
         // Tip: deze test levert een token op. Dat token gebruik je in 
         // andere testcases voor beveiligde routes door het hier te exporteren
@@ -32,6 +52,11 @@ describe('Registration', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+        chai.request(server)
+            .get('/api/register')
+            .end((err,res) => {
+                res.should.have.status(400)
+            })
         done()
     })
 
@@ -39,6 +64,19 @@ describe('Registration', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        chai.request(server)
+        .post('/api/register')
+        .send({
+            "firstname": "Jan",
+            "lastname": "Smit",
+            "email": "jsmit@server.nl",
+            "password": "secret"
+        })
+        .end((err,res) => {
+            res.should.have.status(401)
+        })
+
         done()
     })
 
@@ -46,6 +84,19 @@ describe('Registration', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        chai.request(server)
+        .post('/api/register')
+        .send({
+            "firstname": "",
+            "lastname": "Smit",
+            "email": "jsmit@server.nl",
+            "password": "secret"
+        })
+        .end((err,res) => {
+            res.should.have.status(412)
+        })
+
         done()
     })
 
@@ -53,6 +104,19 @@ describe('Registration', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        chai.request(server)
+        .post('/api/register')
+        .send({
+            "firstname": "J",
+            "lastname": "Smit",
+            "email": "jsmit@server.nl",
+            "password": "secret"
+        })
+        .end((err,res) => {
+            res.should.have.status(412)
+        })
+
         done()
     })
 
@@ -60,6 +124,19 @@ describe('Registration', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        chai.request(server)
+        .post('/api/register')
+        .send({
+            "firstname": "Jan",
+            "lastname": "",
+            "email": "jsmit@server.nl",
+            "password": "secret"
+        })
+        .end((err,res) => {
+            res.should.have.status(412)
+        })
+
         done()
     })
 
@@ -67,6 +144,19 @@ describe('Registration', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        chai.request(server)
+        .post('/api/register')
+        .send({
+            "firstname": "Jan",
+            "lastname": "S",
+            "email": "jsmit@server.nl",
+            "password": "secret"
+        })
+        .end((err,res) => {
+            res.should.have.status(412)
+        })
+
         done()
     })
 
@@ -74,6 +164,19 @@ describe('Registration', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        chai.request(server)
+        .post('/api/register')
+        .send({
+            "firstname": "Jan",
+            "lastname": "Smit",
+            "email": "jsmit",
+            "password": "secret"
+        })
+        .end((err,res) => {
+            res.should.have.status(412)
+        })
+
         done()
     })
 
@@ -85,6 +188,25 @@ describe('Login', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        chai.request(server)
+            .post('/api/login')
+            .send({
+                "email": "jsmit@server.nl",
+                "password": "secret"
+            })
+            .end((err,res) => {
+                res.should.have.status(200)
+                res.body.should.be.a('object')
+
+                const response = res.body
+                response.should.have.property('token').which.is.an('object')
+            })
+        
+        validToken = res.body.token
+        module.exports = {
+            token: validToken
+        }
         done()
     })
 
@@ -92,6 +214,16 @@ describe('Login', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        chai.request(server)
+        .post('/api/login')
+        .send({
+            "email": "",
+            "password": "secret"
+        })
+        .end((err,res) => {
+            res.should.have.status(401)
+        })
         done()
     })
 
@@ -99,6 +231,16 @@ describe('Login', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+
+        chai.request(server)
+        .post('/api/login')
+        .send({
+            "email": "jsmit@server.nl",
+            "password": "invalidpassword"
+        })
+        .end((err,res) => {
+            res.should.have.status(401)
+        })
         done()
     })
 
@@ -106,6 +248,15 @@ describe('Login', () => {
         //
         // Hier schrijf je jouw testcase.
         //
+        chai.request(server)
+        .post('/api/login')
+        .send({
+            "email": "invalidemail@tryagain.com",
+            "password": "invalidpassword"
+        })
+        .end((err,res) => {
+            res.should.have.status(401)
+        })
         done()
     })
 
