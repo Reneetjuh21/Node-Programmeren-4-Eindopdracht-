@@ -61,54 +61,55 @@ module.exports = {
 
     register(req, res, next){
         // De username en pwd worden meegestuurd in de request body
-        const user = usercontrol.createUser(req, res, next);
-
-        db.query('SELECT ID, Email FROM user WHERE Email = ?',[user.email], function(error, rows, fields) {
-            if(error){
-                next(error);
-            } else {
-                if (rows.length == 0){
-                    const saltRounds = 10;
-                    bcrypt.hash(user.password, saltRounds, function(err, hash) {
-                        var encryptedpassword = hash;
-                        db.query('INSERT INTO `user`(`Voornaam`, `Achternaam`, `Email`, `Password`) VALUES (?, ?, ?, ?)',[ user.firstname, user.lastname, user.email, encryptedpassword], function(error, rows, fields) {
-                            if(error){
-                                next(error);
+        if(usercontrol.createUser(req, res, next)){
+            const user = usercontrol.createUser(req, res, next)
+            db.query('SELECT ID, Email FROM user WHERE Email = ?',[user.email], function(error, rows, fields) {
+                if(error){
+                    next(error);
+                } else {
+                    if (rows.length == 0){
+                        const saltRounds = 10;
+                        bcrypt.hash(user.password, saltRounds, function(err, hash) {
+                            var encryptedpassword = hash;
+                            db.query('INSERT INTO `user`(`Voornaam`, `Achternaam`, `Email`, `Password`) VALUES (?, ?, ?, ?)',[ user.firstname, user.lastname, user.email, encryptedpassword], function(error, rows, fields) {
+                                if(error){
+                                    next(error);
+                                } else {
+                                    var token = auth.encodeToken(user.email, rows.insertId);
+                                    res.status(200).json({
+                                        "token": token,
+                                        "email": user.email
+                                    });
+                                }
+                            }); 
+                        });
+                    } else {
+                        for (var i = 0; i < rows.length; i++){
+                            var db_email = rows[i].Email;
+                            if (user.email == db_email) {
+                                const error = new api_error("De gebruiker die u probeert toe te voegen, gebruikt een emailadres dat al bekend is in onze database. Gebruik een andere.", 401)
+                                next(error)
                             } else {
-                                var token = auth.encodeToken(user.email, rows.insertId);
-                                res.status(200).json({
-                                    "token": token,
-                                    "email": user.email
+                                const saltRounds = 10;
+                                bcrypt.hash(user.password, saltRounds, function(err, hash) {
+                                    var encryptedpassword = hash;
+                                    db.query('INSERT INTO `user`(`Voornaam`, `Achternaam`, `Email`, `Password`) VALUES (?, ?, ?, ?)',[ user.firstname, user.lastname, user.email, encryptedpassword], function(error, rows, fields) {
+                                        if(error){
+                                            next(error);
+                                        } else {
+                                            var token = auth.encodeToken(user.email, rows.insertId);
+                                            res.status(200).json({
+                                                "token": token,
+                                                "email": user.email
+                                            });
+                                        }
+                                    }); 
                                 });
                             }
-                        }); 
-                    });
-                } else {
-                    for (var i = 0; i < rows.length; i++){
-                        var db_email = rows[i].Email;
-                        if (user.email == db_email) {
-                            const error = new api_error("De gebruiker die u probeert toe te voegen, gebruikt een emailadres dat al bekend is in onze database. Gebruik een andere.", 401)
-                            next(error)
-                        } else {
-                            const saltRounds = 10;
-                            bcrypt.hash(user.password, saltRounds, function(err, hash) {
-                                var encryptedpassword = hash;
-                                db.query('INSERT INTO `user`(`Voornaam`, `Achternaam`, `Email`, `Password`) VALUES (?, ?, ?, ?)',[ user.firstname, user.lastname, user.email, encryptedpassword], function(error, rows, fields) {
-                                    if(error){
-                                        next(error);
-                                    } else {
-                                        var token = auth.encodeToken(user.email, rows.insertId);
-                                        res.status(200).json({
-                                            "token": token,
-                                            "email": user.email
-                                        });
-                                    }
-                                }); 
-                            });
-                        }
-                    } 
+                        } 
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 }
