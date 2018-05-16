@@ -314,4 +314,5 @@ describe('Studentenhuis API DELETE', () => {
     //     //
     //     done()
     // })
-})
+    })
+});
