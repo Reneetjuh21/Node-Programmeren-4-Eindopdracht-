@@ -5,11 +5,6 @@ const server = require('../server')
 chai.should()
 chai.use(chaiHttp)
 
-// before(function(){
-//     validToken = require('./authentication.routes.test').token
-//     console.log('TOKEN ' + validToken)
-// })
-
 var global_token = '';
 
 before(function(){
@@ -18,10 +13,6 @@ before(function(){
 
 describe('Studentenhuis API POST', () => {
     it('should throw an error when using invalid JWT token', (done) => {
-        //
-        // Hier schrijf je jouw testcase.
-        //
-
         let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
 
         chai.request(server)
@@ -35,10 +26,6 @@ describe('Studentenhuis API POST', () => {
     })
 
     it('should return a studentenhuis when posting a valid object', (done) => {
-        //
-        // Hier schrijf je jouw testcase.
-        //
-
         let studentenhuis = {
             naam: 'Herstraat',
             adres: 'Herstraat 9 Den Hout'
@@ -61,10 +48,6 @@ describe('Studentenhuis API POST', () => {
     })
 
     it('should throw an error when naam is missing', (done) => {
-        //
-        // Hier schrijf je jouw testcase.
-        //
-
         let studentenhuis = {
             adres: 'Herstraat 9 Den Hout'
         };
@@ -81,10 +64,6 @@ describe('Studentenhuis API POST', () => {
     })
 
     it('should throw an error when adres is missing', (done) => {
-        //
-        // Hier schrijf je jouw testcase.
-        //
-
         let studentenhuis = {
             naam: 'Herstraat'
         };
@@ -103,11 +82,7 @@ describe('Studentenhuis API POST', () => {
 
 describe('Studentenhuis API GET all', () => {
     it('should throw an error when using invalid JWT token', (done) => {
-        //
-        // Hier schrijf je jouw testcase.
-        //
-
-        let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+       let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 
         chai.request(server)
             .get('/api/studentenhuis')
@@ -120,10 +95,6 @@ describe('Studentenhuis API GET all', () => {
     })
 
     it('should return all studentenhuizen when using a valid token', (done) => {
-        //
-        // Hier schrijf je jouw testcase.
-        //
-
         chai.request(server)
             .get('/api/studentenhuis')
             .set('Authorization', 'Bearer '+global_token)
@@ -137,10 +108,6 @@ describe('Studentenhuis API GET all', () => {
 
 describe('Studentenhuis API GET one', () => {
     it('should throw an error when using invalid JWT token', (done) => {
-        //
-        // Hier schrijf je jouw testcase.
-        //
-
         let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 
         chai.request(server)
@@ -154,10 +121,6 @@ describe('Studentenhuis API GET one', () => {
     })
 
     it('should return the correct studentenhuis when using an existing huisId', (done) => {
-        //
-        // Hier schrijf je jouw testcase.
-        //
-
         chai.request(server)
             .get('/api/studentenhuis/1')
             .set('Authorization', 'Bearer '+global_token)
@@ -170,10 +133,6 @@ describe('Studentenhuis API GET one', () => {
     })
 
     it('should return an error when using an non-existing huisId', (done) => {
-        //
-        // Hier schrijf je jouw testcase.
-        //
-
         chai.request(server)
             .get('/api/studentenhuis/999')
             .set('Authorization', 'Bearer '+global_token)
@@ -187,10 +146,6 @@ describe('Studentenhuis API GET one', () => {
 
 describe('Studentenhuis API PUT', () => {
     it('should throw an error when using invalid JWT token', (done) => {
-        //
-        // Hier schrijf je jouw testcase.
-        //
-
         let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 
         chai.request(server)
@@ -204,10 +159,6 @@ describe('Studentenhuis API PUT', () => {
     })
 
     it('should return a studentenhuis with ID when posting a valid object', (done) => {
-        //
-        // Hier schrijf je jouw testcase.
-        //
-
         let studentenhuis = {
             naam: 'Herstraat',
             adres: 'Herstraat 9 Den Hout'
@@ -228,10 +179,6 @@ describe('Studentenhuis API PUT', () => {
     })
 
     it('should throw an error when naam is missing', (done) => {
-        //
-        // Hier schrijf je jouw testcase.
-        //
-
         let studentenhuis = {
             adres: 'Herstraat 9 Den Hout'
         };
@@ -249,10 +196,6 @@ describe('Studentenhuis API PUT', () => {
     })
 
     it('should throw an error when adres is missing', (done) => {
-        //
-        // Hier schrijf je jouw testcase.
-        //
-
         let studentenhuis = {
             naam: 'Herstraat'
         };
@@ -271,10 +214,6 @@ describe('Studentenhuis API PUT', () => {
 
 describe('Studentenhuis API DELETE', () => {
     it('should throw an error when using invalid JWT token', (done) => {
-        //
-        // Hier schrijf je jouw testcase.
-        //
-
         let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
 
         chai.request(server)
@@ -288,10 +227,6 @@ describe('Studentenhuis API DELETE', () => {
     })
 
     it('should return a studentenhuis when posting a valid object', (done) => {
-        //
-        // Hier schrijf je jouw testcase.
-        //
-
         chai.request(server)
             .delete('/api/studentenhuis/8')
             .set('Authorization', 'Bearer '+global_token)
@@ -301,7 +236,7 @@ describe('Studentenhuis API DELETE', () => {
             });
 
         done()
-    // })
+    })
 
     // it('should throw an error when naam is missing', (done) => {
     //     //
@@ -316,5 +251,5 @@ describe('Studentenhuis API DELETE', () => {
     //     //
     //     done()
     // })
-    })
+    // })
 });

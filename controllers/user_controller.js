@@ -8,7 +8,6 @@ module.exports = {
         if (typeof req.body.firstname === "undefined" ||  typeof req.body.lastname === "undefined" || typeof req.body.email === "undefined" || typeof req.body.password === "undefined"){
             const error = new api_error("Een of meer properties in de request body ontbreken of zijn foutief", 412);
             next(error);
-            return
         } else {
             try {
                 assert.equal(typeof(req.body.firstname), 'string', 'Expected a string!')
@@ -21,7 +20,6 @@ module.exports = {
                 if (!validator.validate(req.body.email)){
                     const error = new api_error("Een of meer properties in de request body ontbreken of zijn foutief", 412);
                     next(error);
-                    return
                 } else {
                     return new User(req.body.firstname, req.body.lastname, req.body.email, req.body.password)
                 }
@@ -29,7 +27,6 @@ module.exports = {
             catch (ex) {
                 const error = new api_error("Een of meer properties in de request body ontbreken of zijn foutief", 412);
                 next(error);
-                return
             }
         }
     }
