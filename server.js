@@ -35,8 +35,8 @@ app.use(expressJWT({
 }));
 
 // configureer de app
-app.set('port', (process.env.PORT | config.webPort));
-app.set('env', (process.env.ENV | 'development'))
+app.set('port', (process.env.PORT || config.webPort));
+// app.set('env', (process.env.ENV | 'development'))
 
 // Installeer Morgan als logger
 app.use(logger('dev'));
@@ -56,12 +56,12 @@ app.use('/api', routesMaaltijd);
 app.use('/api', routesDeelnemers);
 
 app.use(function(err, req, res, next) {
-    console.dir(err);
     var error = {
         message: err.message,
         code: err.code,
         name: err.name,
-        status: err.status
+        status: err.status,
+        date: Date()
     }
     res.status(401).send(error);
 });
