@@ -295,6 +295,7 @@ describe('Studentenhuis API DELETE', () => {
             .set('Authorization', 'Bearer '+global.token)
             .end( (err, res) => {
                 res.should.have.status(200);
+                res.should.be.a('object');
             });
 
         done()
