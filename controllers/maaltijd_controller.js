@@ -5,6 +5,7 @@ const api_error = require('../models/apierror');
 const Maaltijd = require('../models/maaltijd');
 
 module.exports = {
+
     postNew(req, res, next) {
 
         var bufferPayload = '';
@@ -76,7 +77,7 @@ module.exports = {
             res.status(400).json(error);
 		} else {
             if (rows.length == 0) {
-                const error = new api_error('Niet gevonden (huisId bestaat niet)', 404);
+                const error = new api_error('Niet gevonden (huisId of maaltijdId bestaat niet)', 404);
                 res.status(404).json(error);
             } else {
                 var array = [];

@@ -20,7 +20,6 @@ module.exports = {
             });
 
         var userToken = bufferPayload.UserID;
-        console.log(userToken);
 
         try {
                 assert(typeof (req.body.naam) === 'string', 'Name must be a string.')

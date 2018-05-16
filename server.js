@@ -6,7 +6,8 @@ var express = require('express');
 var bodyParser = require('body-parser')
 var logger = require('morgan');
 var routesStudent = require('./api/studentenhuis.routes');
-var routesMaaltijd = require('./api/maaltijd.routes')
+var routesMaaltijd = require('./api/maaltijd.routes');
+var routesDeelnemers = require('./api/deelnemers.routes');
 var routesAuth = require('./api/authentication.routes');
 var config = require('./config/config');
 var db = require('./config/db');
@@ -52,6 +53,7 @@ app.use('*', function(req, res, next) {
 app.use('/api', routesAuth);
 app.use('/api', routesStudent);
 app.use('/api', routesMaaltijd);
+app.use('/api', routesDeelnemers);
 
 app.use(function(err, req, res, next) {
     console.dir(err);
