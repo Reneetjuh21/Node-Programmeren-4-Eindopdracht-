@@ -6,7 +6,7 @@ const User = require('../models/user');
 module.exports = {
     createUser(req, res, next){
         if (typeof req.body.firstname === "undefined" ||  typeof req.body.lastname === "undefined" || typeof req.body.email === "undefined" || typeof req.body.password === "undefined"){
-            const error = new api_error("Een of meer properties in de request body ontbreken of zijn foutief", 401);
+            const error = new api_error("Een of meer properties in de request body ontbreken of zijn foutief", 412);
             next(error);
             return
         } else {
@@ -19,7 +19,7 @@ module.exports = {
                 assert.equal(typeof(req.body.password), 'string', 'Expected a string!')
 
                 if (!validator.validate(req.body.email)){
-                    const error = new api_error("Een of meer properties in de request body ontbreken of zijn foutief", 401);
+                    const error = new api_error("Een of meer properties in de request body ontbreken of zijn foutief", 412);
                     next(error);
                     return
                 } else {
@@ -27,7 +27,7 @@ module.exports = {
                 }
             }
             catch (ex) {
-                const error = new api_error("Een of meer properties in de request body ontbreken of zijn foutief", 401);
+                const error = new api_error("Een of meer properties in de request body ontbreken of zijn foutief", 412);
                 next(error);
                 return
             }
