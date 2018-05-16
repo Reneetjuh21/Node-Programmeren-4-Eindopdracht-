@@ -35,7 +35,7 @@ app.use(expressJWT({
 }));
 
 // configureer de app
-app.set('port', (process.env.PORT | config.webPort));
+app.set('port', (process.env.PORT || config.webPort));
 // app.set('env', (process.env.ENV | 'development'))
 
 // Installeer Morgan als logger
@@ -78,7 +78,7 @@ app.use('*', function(req, res) {
 
 
 // Installatie klaar; start de server.
-app.listen(app.get('port'), "0.0.0.0", function() {
+app.listen(app.get('port'), function() {
     console.log('De server luistert op port ' + app.get('port'));
 });
 
