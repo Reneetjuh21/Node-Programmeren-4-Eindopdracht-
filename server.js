@@ -78,7 +78,7 @@ app.use('*', function(req, res) {
 
 
 // Installatie klaar; start de server.
-app.listen(app.get('port'), function() {
+app.listen(app.get('port'), "0.0.0.0", function() {
     console.log('De server luistert op port ' + app.get('port'));
 });
 
