@@ -56,7 +56,7 @@ app.use('/api', routesMaaltijd);
 app.use('/api', routesDeelnemers);
 
 app.use(function(err, req, res, next) {
-    console.dir(err);
+    //console.dir(err);
     var error = {
         message: err.message,
         code: err.code,
