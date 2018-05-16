@@ -142,7 +142,7 @@ module.exports = {
                                     db.query('SELECT studentenhuis.ID, studentenhuis.Naam, studentenhuis.Adres, user.Voornaam, user.Achternaam, user.Email FROM studentenhuis LEFT JOIN user on studentenhuis.UserID = user.ID WHERE studentenhuis.ID = ? GROUP BY studentenhuis.ID', [insertedId], function(error, rows, fields) {
                                         var array = [];
                                         for(var i = 0; i < rows.length; i++){
-                                            var huis = new Studentenhuis(rows[i].ID, rows[i].Naam, rows[i].Adres, rows[i].UserID);
+                                            var huis = new Studentenhuis(rows[i].ID, rows[i].Naam, rows[i].Adres,rows[0].Voornaam+' '+rows[0].Achternaam, rows[0].Email);
                                             array.push(huis);
                                         }
                                         res.status(200).json(array);

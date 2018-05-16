@@ -10,8 +10,10 @@ chai.use(chaiHttp)
 //     console.log('TOKEN ' + validToken)
 // })
 
+var global_token = '';
+
 before(function(){
-    global.token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MjY1NzQ3MTYsImlhdCI6MTUyNjQwMTkxNiwibWFpbCI6ImpzbWl0QHNlcnZlci5ubCIsInVzZXJJRCI6MX0.TrSDN7PY6IZeMJSZnUpkH3LfSvHeKUqW0FRCjZkqAeM';
+    global_token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MjY2MDM0NDIsImlhdCI6MTUyNjQzMDY0MiwibWFpbCI6ImVtYWllcndlcmxAZ21haWwuY29tIiwiVXNlcklEIjo3fQ.7N_C9g4Bv7Mqs4Tv_zU2_Ro3ieaO_1DM7GF0Q1W1R2w';
 });
 
 describe('Studentenhuis API POST', () => {
@@ -20,7 +22,7 @@ describe('Studentenhuis API POST', () => {
         // Hier schrijf je jouw testcase.
         //
 
-        let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+        let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
 
         chai.request(server)
             .post('/api/studentenhuis')
@@ -44,7 +46,7 @@ describe('Studentenhuis API POST', () => {
 
         chai.request(server)
             .post('/api/studentenhuis')
-            .set('Authorization', 'Bearer '+global.token)
+            .set('Authorization', 'Bearer '+global_token)
             .send(studentenhuis)
             .end( (err, res) => {
                 res.should.have.status(200);
@@ -69,7 +71,7 @@ describe('Studentenhuis API POST', () => {
 
         chai.request(server)
             .post('/api/studentenhuis')
-            .set('Authorization', 'Bearer '+global.token)
+            .set('Authorization', 'Bearer '+global_token)
             .send(studentenhuis)
             .end( (err, res) => {
                 res.should.have.status(412);
@@ -89,7 +91,7 @@ describe('Studentenhuis API POST', () => {
 
         chai.request(server)
             .post('/api/studentenhuis')
-            .set('Authorization', 'Bearer '+global.token)
+            .set('Authorization', 'Bearer '+global_token)
             .send(studentenhuis)
             .end( (err, res) => {
                 res.should.have.status(412);
@@ -124,7 +126,7 @@ describe('Studentenhuis API GET all', () => {
 
         chai.request(server)
             .get('/api/studentenhuis')
-            .set('Authorization', 'Bearer '+global.token)
+            .set('Authorization', 'Bearer '+global_token)
             .end( (err, res) => {
                 res.body.should.be.a('array');
             });
@@ -158,7 +160,7 @@ describe('Studentenhuis API GET one', () => {
 
         chai.request(server)
             .get('/api/studentenhuis/1')
-            .set('Authorization', 'Bearer '+global.token)
+            .set('Authorization', 'Bearer '+global_token)
             .end( (err, res) => {
                 res.should.have.status(200);
                 res.should.be.a('object');
@@ -174,7 +176,7 @@ describe('Studentenhuis API GET one', () => {
 
         chai.request(server)
             .get('/api/studentenhuis/999')
-            .set('Authorization', 'Bearer '+global.token)
+            .set('Authorization', 'Bearer '+global_token)
             .end( (err, res) => {
                 res.should.have.status(404);
             });
@@ -214,7 +216,7 @@ describe('Studentenhuis API PUT', () => {
         chai.request(server)
             .put('/api/studentenhuis/75')
             .send(studentenhuis)
-            .set('Authorization', 'Bearer '+global.token)
+            .set('Authorization', 'Bearer '+global_token)
             .end( (err, res) =>{
                 res.should.have.status(200);
                 res.should.be.a('object');
@@ -237,7 +239,7 @@ describe('Studentenhuis API PUT', () => {
         chai.request(server)
             .put('/api/studentenhuis/7')
             .send(studentenhuis)
-            .set('Authorization', 'Bearer '+global.token)
+            .set('Authorization', 'Bearer '+global_token)
             .end( (err, res) => {
                 res.should.have.status(412)
             });
@@ -258,7 +260,7 @@ describe('Studentenhuis API PUT', () => {
         chai.request(server)
             .put('/api/studentenhuis/7')
             .send(studentenhuis)
-            .set('Authorization', 'Bearer '+global.token)
+            .set('Authorization', 'Bearer '+global_token)
             .end( (err, res) => {
                 res.should.have.status(412)
             });
@@ -292,7 +294,7 @@ describe('Studentenhuis API DELETE', () => {
 
         chai.request(server)
             .delete('/api/studentenhuis/8')
-            .set('Authorization', 'Bearer '+global.token)
+            .set('Authorization', 'Bearer '+global_token)
             .end( (err, res) => {
                 res.should.have.status(200);
                 res.should.be.a('object');

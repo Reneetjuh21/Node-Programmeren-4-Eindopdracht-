@@ -45,7 +45,7 @@ module.exports = {
                                         if (error) {                              
                                             res.status(400).json(error);
                                         } else {
-                                            //Als datis gelukt, laat dan gebruikersinformatie zien over de toegevoegde deelnemer
+                                            //Als dat is gelukt, laat dan gebruikersinformatie zien over de toegevoegde deelnemer
                                             db.query('SELECT Voornaam, Achternaam, Email FROM user WHERE ID = ?', [userToken], function(error, rows, fields) {
                                                 if (error) {
                                                     res.status(400).json(error);
@@ -124,7 +124,7 @@ module.exports = {
         var insertedStudentId = req.params.id;
         var insertedMaaltijdId = req.params.mId;
         //Er wordt een query uitgevoerd waarbij een deelnemer wordt verwijderd als de userToken van deze deelnemer in de lijst met deelnemers bestaat
-        db.query('SELECT * FROM deelnemers WHERE StudentenhuisID = ? AND MaaltijdID = ?', [insertedStudentId, insertedMaaltijdId], function(error, rows, fields) {
+        db.query('SELECT * FROM deelnemers WHERE StudentenhuisID = ? AND MaaltijdID = ? AND UserID = ?', [insertedStudentId, insertedMaaltijdId, userToken], function(error, rows, fields) {
             if (error) {
                 res.status(400).json(error);
             } else {
@@ -132,23 +132,15 @@ module.exports = {
                     const error = new api_error('Niet gevonden (huisId of maaltijdId bestaat niet)', 404);
                     res.status(404).json(error);
                 } else {
-                    for (var i = 0; i < rows.length; i++) {
-                        if (rows[i].UserID == userToken) {
-                            db.query('DELETE FROM deelnemers WHERE UserID = ?', [userToken], function(error, rows, fields) {
-                                if (error) {
-                                    res.status(400).json(error);
-                                } else {
-                                    deletedUser = true;
-                                    const error = new api_error('Deelnemer is succesvol van de maaltijd verwijderd.', 200);
-                                    res.status(200).json(error);
-                                }
-                            });
-                        }
+                    db.query('DELETE FROM deelnemers WHERE StudentenhuisID = ? AND MaaltijdID = ? AND UserID = ?', [insertedStudentId, insertedMaaltijdId, userToken], function(error, rows, fields) {
+                    if (error) {
+                        res.status(400).json(error);
+                    } else {
+                        deletedUser = true;
+                        const error = new api_error('Deelnemer is succesvol van de maaltijd verwijderd.', 200);
+                        res.status(200).json(error);
                     }
-                    if (!deletedUser) {
-                        const error = new api_error('Conflict (Gebruiker mag deze data niet wijzigen)', 409);
-                        res.status(409).json(error);
-                    }
+                    });
                 }
             }
         });
