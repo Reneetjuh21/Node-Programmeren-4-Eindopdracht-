@@ -88,9 +88,8 @@ describe('Registration', () => {
         chai.request(server)
         .post('/api/register')
         .send({
-            "firstname": "",
             "lastname": "Smit",
-            "email": "jsmit@server.nl",
+            "email": "supertest@hotmail.com",
             "password": "secret"
         })
         .end((err,res) => {
@@ -110,7 +109,7 @@ describe('Registration', () => {
         .send({
             "firstname": "J",
             "lastname": "Smit",
-            "email": "jsmit@server.nl",
+            "email": "legoduplo@lego.com",
             "password": "secret"
         })
         .end((err,res) => {
@@ -129,8 +128,7 @@ describe('Registration', () => {
         .post('/api/register')
         .send({
             "firstname": "Jan",
-            "lastname": "",
-            "email": "jsmit@server.nl",
+            "email": "Jansprivemail@jantje.nl",
             "password": "secret"
         })
         .end((err,res) => {
@@ -150,7 +148,7 @@ describe('Registration', () => {
         .send({
             "firstname": "Jan",
             "lastname": "S",
-            "email": "jsmit@server.nl",
+            "email": "testjan@jan.nl",
             "password": "secret"
         })
         .end((err,res) => {

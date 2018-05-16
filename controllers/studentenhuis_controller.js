@@ -30,7 +30,7 @@ module.exports = {
                 res.status(412).json(error);
         }
 
-        res.contentType('application/json');
+        // res.contentType('application/json');
 
 	    var insertedNaam = req.body.naam;
         var insertedAdres = req.body.adres;
@@ -55,12 +55,16 @@ module.exports = {
     },
 
     getAll(req, res, next) {
+<<<<<<< HEAD
         res.contentType('application/json');
         //Voer een query uit waarbij alle studentenhuizen met gebruikersinformatie worden geretourneerd en weergegeven
+=======
+        // res.contentType('application/json');
+
+>>>>>>> 53895c65aaa955b7f7bad69b5abb19847550aa2e
 	    db.query('SELECT studentenhuis.ID, studentenhuis.Naam, studentenhuis.Adres, user.Voornaam, user.Achternaam, user.Email FROM studentenhuis LEFT JOIN user on studentenhuis.UserID = user.ID GROUP BY studentenhuis.ID',  function(error, rows, fields) {
             var array = [];
             for(var i = 0; i < rows.length; i++){
-                console.log(rows[i]);
                 var huis = new Studentenhuis(rows[i].ID, rows[i].Naam, rows[i].Adres,rows[0].Voornaam+' '+rows[0].Achternaam, rows[0].Email);
                 array.push(huis);
             }
@@ -72,8 +76,13 @@ module.exports = {
 
         var studentenhuisId = req.params.id;
 
+<<<<<<< HEAD
         res.contentType('application/json');
         //Voer een query uit waarbij een studentenhuis met gebruikersinformatie wordt geretourneerd en weergegeven op basis van de ID
+=======
+        // res.contentType('application/json');
+        
+>>>>>>> 53895c65aaa955b7f7bad69b5abb19847550aa2e
 	    db.query('SELECT studentenhuis.ID, studentenhuis.Naam, studentenhuis.Adres, user.Voornaam, user.Achternaam, user.Email FROM studentenhuis LEFT JOIN user on studentenhuis.UserID = user.ID WHERE studentenhuis.ID = ? GROUP BY studentenhuis.ID', [studentenhuisId], function(error, rows, fields) {
 		if (error) {
 			res.status(400).json(error);
@@ -121,7 +130,7 @@ module.exports = {
         var insertedAdres = req.body.adres;
         var insertedId = req.params.id;
 
-        res.contentType('application/json');
+        // res.contentType('application/json');
 
         //Voer een query uit waarbij een studentenhuis wordt gertourneerd op basis van de ID
         db.query('SELECT * FROM studentenhuis WHERE ID = ?', [insertedId], function(error, rows, fields) {
@@ -175,7 +184,7 @@ module.exports = {
         var userToken = bufferPayload.UserID;
         var insertedId = req.params.id;
        
-        res.contentType('application/json');
+        // res.contentType('application/json');
 
         //Voer een query uit waarbij een studentenhuis wordt gertourneerd op basis van de ID
         db.query('SELECT * FROM studentenhuis WHERE ID = ?', [insertedId], function(error, rows, fields) {
