@@ -22,7 +22,7 @@ module.exports = {
         var userToken = bufferPayload.UserID;
         var insertedStudentId = req.params.id;
         var insertedMaaltijdId = req.params.mId;
-
+        //Er wordt een query uitgevoerd waar een maaltijd wordt opgevraagd op basis van StudentenhuisID en MaaltijdID
         db.query('SELECT * FROM maaltijd WHERE StudentenhuisID = ? AND ID = ?', [insertedStudentId, insertedMaaltijdId], function(error, rows, fields) {
             if (error) {
                 res.status(400).json(error);
@@ -40,10 +40,12 @@ module.exports = {
                                     const error = new api_error('Conflict (Gebruiker is al aangemeld)', 409);
                                     res.status(404).json(error);
                                 } else {
+                                    //Als de maaltijd bestaat, wordt er een nieuwe gebruiker met de userToken toegevoegd aan tabel deelnemers (van de maaltijd)
                                     db.query('INSERT INTO deelnemers (UserID, StudentenhuisID, MaaltijdID) VALUES (?, ?, ?)', [userToken, insertedStudentId, insertedMaaltijdId], function(error, rows, fields) {
                                         if (error) {                              
                                             res.status(400).json(error);
                                         } else {
+                                            //Als datis gelukt, laat dan gebruikersinformatie zien over de toegevoegde deelnemer
                                             db.query('SELECT Voornaam, Achternaam, Email FROM user WHERE ID = ?', [userToken], function(error, rows, fields) {
                                                 if (error) {
                                                     res.status(400).json(error);
@@ -56,6 +58,7 @@ module.exports = {
                                     });
                                 }
                             } else {
+                                //Dit wordt er uitgevoerd wanneer er nog geen deelnemers zijn
                                 db.query('INSERT INTO deelnemers (UserID, StudentenhuisID, MaaltijdID) VALUES (?, ?, ?)', [userToken, insertedStudentId, insertedMaaltijdId], function(error, rows, fields) {
                                     if (error) {                              
                                         res.status(400).json(error);
@@ -82,7 +85,7 @@ module.exports = {
 
         var insertedStudentId = req.params.id;
         var insertedMaaltijdId = req.params.mId;
-
+        //Er wordt een query uitgevoerd die alle deelnemers teruggeeft die deelnemen aan maaltijd met het gegeven StudentenhuisID en MaaltijdID
         db.query('SELECT * FROM view_deelnemers WHERE StudentenhuisID = ? AND MaaltijdID = ?', [insertedStudentId, insertedMaaltijdId], function(error, rows, fields) {
             if (error) {
                 res.status(400).json(error);
@@ -120,7 +123,7 @@ module.exports = {
         var deletedUser = false;
         var insertedStudentId = req.params.id;
         var insertedMaaltijdId = req.params.mId;
-
+        //Er wordt een query uitgevoerd waarbij een deelnemer wordt verwijderd als de userToken van deze deelnemer in de lijst met deelnemers bestaat
         db.query('SELECT * FROM deelnemers WHERE StudentenhuisID = ? AND MaaltijdID = ?', [insertedStudentId, insertedMaaltijdId], function(error, rows, fields) {
             if (error) {
                 res.status(400).json(error);
