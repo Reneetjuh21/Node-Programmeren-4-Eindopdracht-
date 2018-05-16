@@ -55,8 +55,6 @@ module.exports = {
     },
 
     getAll(req, res, next) {
-        res.contentType('application/json');
-        //Voer een query uit waarbij alle studentenhuizen met gebruikersinformatie worden geretourneerd en weergegeven
         // res.contentType('application/json');
 
 	    db.query('SELECT studentenhuis.ID, studentenhuis.Naam, studentenhuis.Adres, user.Voornaam, user.Achternaam, user.Email FROM studentenhuis LEFT JOIN user on studentenhuis.UserID = user.ID GROUP BY studentenhuis.ID',  function(error, rows, fields) {
@@ -73,8 +71,6 @@ module.exports = {
 
         var studentenhuisId = req.params.id;
 
-        res.contentType('application/json');
-        //Voer een query uit waarbij een studentenhuis met gebruikersinformatie wordt geretourneerd en weergegeven op basis van de ID
         // res.contentType('application/json');
         
 	    db.query('SELECT studentenhuis.ID, studentenhuis.Naam, studentenhuis.Adres, user.Voornaam, user.Achternaam, user.Email FROM studentenhuis LEFT JOIN user on studentenhuis.UserID = user.ID WHERE studentenhuis.ID = ? GROUP BY studentenhuis.ID', [studentenhuisId], function(error, rows, fields) {
@@ -129,18 +125,18 @@ module.exports = {
         //Voer een query uit waarbij een studentenhuis wordt gertourneerd op basis van de ID
         db.query('SELECT * FROM studentenhuis WHERE ID = ?', [insertedId], function(error, rows, fields) {
             if (error) {
-                res.status(400).json(error);
+                next(error);
             } else {
                 //Als de results niet leeg zijn, controleer dan of de UserID van de row hetzelfde is als de userToken, zo niet, dan mag de gebruiker de data niet veranderen
                 if (rows.length !== 0) {
                     if (rows[0].UserID !== userToken) {
                         const error = new api_error('Conflict (Gebruiker mag deze data niet wijzigen)', 409);
-                        res.status(409).json(error);
+                        next(error);
                     } else {
                         //Als de UserID en de userToken wel hetzelfde zijn, dan wordt er een query uitgevoerd om data in de row up te daten
                         db.query('UPDATE studentenhuis SET naam = ? , Adres = ? WHERE ID = ?', [insertedNaam, insertedAdres, insertedId], function(error, rows, fields) {
                             if (error) {
-                                res.status(400).json(error);
+                                next(error);
                                 } else {
                                     //Als de query succesvol is uitgevoerd, dan wordt er een nieuwe query uitgevoerd die de nieuwe data laat zien
                                     db.query('SELECT studentenhuis.ID, studentenhuis.Naam, studentenhuis.Adres, user.Voornaam, user.Achternaam, user.Email FROM studentenhuis LEFT JOIN user on studentenhuis.UserID = user.ID WHERE studentenhuis.ID = ? GROUP BY studentenhuis.ID', [insertedId], function(error, rows, fields) {
@@ -187,12 +183,12 @@ module.exports = {
                 //Check of de ID van de gebruiker hetzelfde is als de ID waarmee de row was gemaakt
                 if (rows[0].UserID !== userToken) {
                     const error = new api_error('Conflict (Gebruiker mag deze data niet wijzigen)', 409);
-                    res.status(409).json(error);
+                    next(error);
                 } else {
                     //Als alle checks zijn voldaan, verwijder dan de row met de ID die is meegegeven
                     db.query('DELETE FROM studentenhuis WHERE ID = ?', [insertedId], function(error, rows, fields) {
                         if (error) {
-                            res.status(400).json(error);
+                            next(error);
                         } else {
                             const error = new api_error('Studentenhuis is succesvol verwijderd.', 200);
                             res.status(200).json(error);
@@ -201,7 +197,7 @@ module.exports = {
                 } 
             } else {
                 const error = new api_error('Niet gevonden (huisId bestaat niet)', 404);
-                res.status(404).json(error);
+                next(error);
             };
         });
     }
