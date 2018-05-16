@@ -35,7 +35,7 @@ app.use(expressJWT({
 }));
 
 // configureer de app
-app.set('port', (process.env.PORT | config.webPort));
+app.set('port', (process.env.PORT || config.webPort));
 // app.set('env', (process.env.ENV | 'development'))
 
 // Installeer Morgan als logger
